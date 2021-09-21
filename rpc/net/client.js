@@ -1,0 +1,48 @@
+const net = require('net');
+const { buffer } = require('protocol-buffers/compile');
+
+const socket = new net.Socket({});
+socket.connect({
+    host: '127.0.0.1',
+    port: 4000
+});
+
+//socket.write('Hello Nodejs Net');
+
+const lessonids = [
+    "136797",
+    "136798",
+    "136799",
+    "136800",
+    "136801",
+    "136803",
+    "136804",
+    "136806",
+    "136807",
+    "136808",
+    "136809",
+    "141994",
+    "143517",
+    "143557",
+    "143564",
+    "143644",
+    "146470",
+    "146569",
+    "146582"
+];
+
+let cid = Math.floor(Math.random() * lessonids.length);
+
+socket.write(encodeID(cid));
+socket.on('data', (buffer) => {
+    console.log(buffer.toString());
+    
+    cid = Math.floor(Math.random() * lessonids.length);
+    socket.write(encodeID(cid));
+});
+
+function encodeID(index) {
+    const buffer = Buffer.alloc(4);
+    buffer.writeInt32BE(lessonids[index]);
+    return buffer;
+}
